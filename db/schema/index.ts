@@ -1,10 +1,23 @@
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { credentials } from "./credentials";
+import { groups } from "./groups";
+import { projectGroups } from "./projectGroups";
+import { projectMembers } from "./projectMembers";
+import { projects } from "./projects";
+import { users } from "./users";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export * from "./users";
+export * from "./projects";
+export * from "./groups";
+export * from "./enums";
+export * from "./credentials";
+export * from "./projectGroups";
+export * from "./projectMembers";
 
-// You can define more tables and relations here
+export const schema = {
+  users,
+  projects,
+  groups,
+  credentials,
+  projectGroups,
+  projectMembers,
+};
