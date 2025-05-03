@@ -3,7 +3,13 @@ import { groups } from "./groups";
 import { projectGroups } from "./projectGroups";
 import { projectMembers } from "./projectMembers";
 import { projects } from "./projects";
-import { users } from "./users";
+import {
+  accounts,
+  authenticators,
+  sessions,
+  users,
+  verificationTokens,
+} from "./users";
 
 export * from "./users";
 export * from "./projects";
@@ -14,6 +20,10 @@ export * from "./projectGroups";
 export * from "./projectMembers";
 
 export const schema = {
+  accounts,
+  verificationTokens,
+  authenticators,
+  sessions,
   users,
   projects,
   groups,

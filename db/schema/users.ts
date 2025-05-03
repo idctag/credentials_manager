@@ -11,7 +11,6 @@ import {
 import { projectMembers } from "./projectMembers";
 import { groups } from "./groups";
 import { projects } from "./projects";
-import { credentials } from "./credentials";
 import { type AdapterAccountType } from "@auth/core/adapters";
 
 export const users = pgTable("users", {
@@ -25,7 +24,7 @@ export const users = pgTable("users", {
 export const accounts = pgTable(
   "account",
   {
-    userId: text("userId")
+    userId: uuid("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccountType>().notNull(),
@@ -50,7 +49,7 @@ export const accounts = pgTable(
 
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
-  userId: text("userId")
+  userId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
@@ -76,7 +75,7 @@ export const authenticators = pgTable(
   "authenticator",
   {
     credentialID: text("credentialID").notNull().unique(),
-    userId: text("userId")
+    userId: uuid("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     providerAccountId: text("providerAccountId").notNull(),
@@ -97,7 +96,6 @@ export const authenticators = pgTable(
 
 export const usersRelations = relations(users, ({ many }) => ({
   projects: many(projectMembers),
-  groups: many(groups),
+  ownedGroups: many(groups),
   ownedProjects: many(projects),
-  credentials: many(credentials),
 }));
