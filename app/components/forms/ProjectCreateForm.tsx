@@ -1,5 +1,5 @@
-const ProjectCreateForm = () => {
+const TeamCreateForm = () => {
   return <div>ProjectCreateForm</div>;
 };
 
-export default ProjectCreateForm;
+export default TeamCreateForm;

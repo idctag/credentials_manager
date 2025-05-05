@@ -19,10 +19,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavProjects({
-  projects,
+export function NavTeams({
+  teams,
 }: {
-  projects: {
+  teams: {
     name: string;
     url: string;
   }[];
@@ -33,7 +33,7 @@ export function NavProjects({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Credentials</SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
+        {teams.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url}>

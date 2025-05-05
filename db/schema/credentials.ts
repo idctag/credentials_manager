@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { projects } from "./projects";
+import { teams } from "./teams";
 import { groups } from "./groups";
 import { relations } from "drizzle-orm";
 import { users } from "./users";
@@ -13,7 +13,7 @@ export const credentials = pgTable("credentials", {
   id: uuid("id").defaultRandom().notNull().primaryKey(),
   name: text("name").notNull(),
   type: credentialTypeEnum("type").notNull().default("service"),
-  project_id: uuid("project_id").references(() => projects.id, {
+  team_id: uuid("team_id").references(() => teams.id, {
     onDelete: "cascade",
   }),
   owner_id: uuid("owner_id").references(() => users.id, {
@@ -27,9 +27,9 @@ export const credentials = pgTable("credentials", {
 });
 
 export const credentialsRelations = relations(credentials, ({ one }) => ({
-  project: one(projects, {
-    fields: [credentials.project_id],
-    references: [projects.id],
+  team: one(teams, {
+    fields: [credentials.team_id],
+    references: [teams.id],
   }),
   group: one(groups, {
     fields: [credentials.group_id],
