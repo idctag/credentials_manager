@@ -5,4 +5,5 @@ export const credentialTypeEnum = pgEnum("credential_type", [
   "database",
   "service",
   "server",
+  "env",
 ]);
