@@ -4,7 +4,6 @@ import * as React from "react";
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
-import { NavProjects } from "@/components/sidebar/nav-credentials";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
@@ -13,6 +12,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { TeamSwitcher } from "./team-switcher";
+import { NavTeams } from "./nav-credentials";
 
 const data = {
   user: {
@@ -139,7 +139,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.teams[0].navMain} />
-        <NavProjects projects={data.credentials} />
+        <NavTeams teams={data.credentials} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

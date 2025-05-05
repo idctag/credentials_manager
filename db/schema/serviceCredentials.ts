@@ -7,6 +7,8 @@ export const serviceCredentials = pgTable("service_credentials", {
   credential_id: uuid("credential_id").references(() => credentials.id, {
     onDelete: "cascade",
   }),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description", { length: 500 }),
   url: varchar("url", { length: 500 }),
   username: varchar("username", { length: 255 }),
   // TODO: encrypt

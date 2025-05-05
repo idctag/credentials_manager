@@ -5,9 +5,9 @@ import {
 } from "./databaseCredentials";
 import { envCredentialRelations, envCredentials } from "./envCredentials";
 import { groups, groupsRelations } from "./groups";
-import { projectGroups } from "./projectGroups";
-import { projectMembers } from "./projectMembers";
-import { projects, projectsRelations } from "./projects";
+import { teamGroups } from "./teamGroups";
+import { teamMembers } from "./teamMembers";
+import { teams, teamRelations } from "./teams";
 import {
   serverCredentialRelations,
   serverCredentials,
@@ -26,16 +26,16 @@ import {
 } from "./users";
 
 export * from "./users";
-export * from "./projects";
+export * from "./teams";
 export * from "./groups";
 export * from "./enums";
 export * from "./credentials";
-export * from "./projectGroups";
-export * from "./projectMembers";
+export * from "./teamGroups";
+export * from "./teamMembers";
 
 export const schemaRelations = {
   usersRelations,
-  projectsRelations,
+  teamRelations,
   groupsRelations,
   credentialsRelations,
   databaseCredentialRelations,
@@ -50,11 +50,11 @@ export const schema = {
   authenticators,
   sessions,
   users,
-  projects,
+  teams,
   groups,
   credentials,
-  projectGroups,
-  projectMembers,
+  teamGroups,
+  teamMembers,
   databaseCredentials,
   envCredentials,
   serverCredentials,

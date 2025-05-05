@@ -8,9 +8,9 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { projectMembers } from "./projectMembers";
+import { teamMembers } from "./teamMembers";
 import { groups } from "./groups";
-import { projects } from "./projects";
+import { teams } from "./teams";
 import { type AdapterAccountType } from "@auth/core/adapters";
 
 export const users = pgTable("users", {
@@ -95,7 +95,7 @@ export const authenticators = pgTable(
 );
 
 export const usersRelations = relations(users, ({ many }) => ({
-  projects: many(projectMembers),
+  teams: many(teamMembers),
   ownedGroups: many(groups),
-  ownedProjects: many(projects),
+  ownedTeams: many(teams),
 }));

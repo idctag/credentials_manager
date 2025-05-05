@@ -7,6 +7,8 @@ export const envCredentials = pgTable("env_credentials", {
   credential_id: uuid("credential_id")
     .references(() => credentials.id, { onDelete: "cascade" })
     .notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: varchar("description", { length: 500 }),
   // TODO: encrypt
   text: text("text"),
 });

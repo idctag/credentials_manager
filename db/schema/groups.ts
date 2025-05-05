@@ -1,7 +1,7 @@
 import { pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { relations } from "drizzle-orm";
-import { projectGroups } from "./projectGroups";
+import { teamGroups } from "./teamGroups";
 import { credentials } from "./credentials";
 
 export const groups = pgTable("groups", {
@@ -16,6 +16,6 @@ export const groupsRelations = relations(groups, ({ many, one }) => ({
     fields: [groups.owner_id],
     references: [users.id],
   }),
-  projects: many(projectGroups),
+  teams: many(teamGroups),
   credentials: many(credentials),
 }));
