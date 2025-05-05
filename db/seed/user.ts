@@ -3,10 +3,9 @@ import { AdapterAccountType } from "@auth/core/adapters"; // Import the type
 import { accounts, users } from "../schema";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
-export async function seedGithubUser(db: PostgresJsDatabase) {
+export async function seedGithubUser(db: PostgresJsDatabase, userId: string) {
   console.log("Starting database seeding for GitHub user...");
 
-  const userId = uuidv4();
   const providerAccountId = "73417322";
 
   // Data for the user
