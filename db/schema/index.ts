@@ -22,7 +22,6 @@ import {
   sessions,
   users,
   usersRelations,
-  verificationTokens,
 } from "./users";
 
 export * from "./users";
@@ -46,7 +45,6 @@ export const schemaRelations = {
 
 export const schema = {
   accounts,
-  verificationTokens,
   authenticators,
   sessions,
   users,
