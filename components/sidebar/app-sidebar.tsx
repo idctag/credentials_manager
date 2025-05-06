@@ -15,11 +15,6 @@ import { TeamSwitcher } from "./team-switcher";
 import { NavTeams } from "./nav-credentials";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "#",
-  },
   teams: [
     {
       name: "Vix2",
@@ -142,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavTeams teams={data.credentials} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );
