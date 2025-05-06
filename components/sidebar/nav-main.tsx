@@ -18,33 +18,22 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { SelectGroup } from "@/lib/data/teams";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string;
-    url: string;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
-}) {
+export function NavMain({ groups }: { groups: SelectGroup[] }) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Groups</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+        {groups.map((item) => (
+          <Collapsible key={item.name} asChild defaultOpen={false}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <span>{item.title}</span>
+              <SidebarMenuButton asChild tooltip={item.name}>
+                <a href="#">
+                  <span>{item.name}</span>
                 </a>
               </SidebarMenuButton>
-              {item.items?.length ? (
+              {item.credentials?.length ? (
                 <>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuAction className="data-[state=open]:rotate-90">
@@ -54,11 +43,11 @@ export function NavMain({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
+                      {item.credentials?.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.name}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
+                            <a href="#">
+                              <span>{subItem.name}</span>
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

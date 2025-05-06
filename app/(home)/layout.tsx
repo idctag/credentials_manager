@@ -1,14 +1,14 @@
 import DynamicBreadCrumb from "@/components/dynamic-breadcrumb";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import SideBarComp from "@/components/sidebar";
 import { ModeToggle } from "@/components/theme-toggle";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+// import {
+//   Breadcrumb,
+//   BreadcrumbItem,
+//   BreadcrumbLink,
+//   BreadcrumbList,
+//   BreadcrumbPage,
+//   BreadcrumbSeparator,
+// } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -25,7 +25,7 @@ export default function HomeLayout({
   return (
     <SessionProvider>
       <SidebarProvider>
-        <AppSidebar />
+        <SideBarComp />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 justify-between px-4">
             <div className="flex items-center gap-2 px-4">

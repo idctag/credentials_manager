@@ -18,26 +18,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { SelectCredential } from "@/lib/data/teams";
 
-export function NavTeams({
-  teams,
-}: {
-  teams: {
-    name: string;
-    url: string;
-  }[];
-}) {
+export function NavCredentials({ creds }: { creds: SelectCredential[] }) {
   const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Credentials</SidebarGroupLabel>
       <SidebarMenu>
-        {teams.map((item) => (
-          <SidebarMenuItem key={item.name}>
+        {creds.map((credential) => (
+          <SidebarMenuItem key={credential.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
-                <span>{item.name}</span>
+              <a href="#">
+                <span>{credential.name}</span>
               </a>
             </SidebarMenuButton>
             <DropdownMenu>
