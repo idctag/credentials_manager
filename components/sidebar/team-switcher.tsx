@@ -17,14 +17,78 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserTeams } from "@/lib/data/teams";
+import { UserTeams, getTeams } from "@/lib/data/teams";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { CreateTeamForm } from "../forms/CreateTeam";
 
-export function TeamSwitcher({ userTeams }: { userTeams: UserTeams[] }) {
+export function TeamSwitcher({
+  userTeams: initialTeams,
+}: {
+  userTeams: UserTeams[];
+}) {
   const { isMobile } = useSidebar();
-
+  const [open, setOpen] = React.useState(false);
+  const [userTeams, setUserTeams] = React.useState<UserTeams[]>(initialTeams);
   const [activeTeam, setActiveTeam] = React.useState(userTeams[0]);
+
+  // Function to refresh the teams list
+  const refreshTeams = React.useCallback(async () => {
+    try {
+      // Option 1: Using a server action to fetch fresh data
+      const freshTeams = await getTeams();
+      setUserTeams(freshTeams);
+
+      // If the active team was just created, set it as active
+      if (
+        freshTeams.length > 0 &&
+        (!activeTeam || freshTeams.length > userTeams.length)
+      ) {
+        setActiveTeam(freshTeams[freshTeams.length - 1]);
+      }
+    } catch (error) {
+      console.error("Failed to refresh teams:", error);
+    }
+  }, [activeTeam, userTeams.length]);
+
+  // Alternative approach: Update local state directly with the new team
+  const handleTeamCreated = React.useCallback((newTeam: UserTeams) => {
+    setUserTeams((prevTeams) => {
+      const updatedTeams = [...prevTeams, newTeam];
+      return updatedTeams;
+    });
+    setActiveTeam(newTeam);
+    setOpen(false);
+  }, []);
+
   if (!activeTeam) {
-    return null;
+    return (
+      <SidebarMenu>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <SidebarMenuItem className="cursor-pointer">
+              Create Team
+            </SidebarMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create team</DialogTitle>
+            </DialogHeader>
+            <CreateTeamForm
+              onSuccess={(newTeam) => {
+                handleTeamCreated(newTeam);
+                // Alternatively, use refreshTeams();
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </SidebarMenu>
+    );
   }
 
   return (
@@ -69,12 +133,36 @@ export function TeamSwitcher({ userTeams }: { userTeams: UserTeams[] }) {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
-            </DropdownMenuItem>
+
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <DropdownMenuItem
+                  className="gap-2 p-2 cursor-pointer"
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    setOpen(true);
+                  }}
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                    <Plus className="size-4" />
+                  </div>
+                  <div className="font-medium text-muted-foreground">
+                    Add team
+                  </div>
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create team</DialogTitle>
+                </DialogHeader>
+                <CreateTeamForm
+                  onSuccess={(newTeam) => {
+                    handleTeamCreated(newTeam);
+                    // Alternatively, use refreshTeams();
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
