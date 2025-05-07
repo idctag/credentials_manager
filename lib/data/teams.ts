@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { teamsTable, userTeamsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-export type UserTeams = {
+export type UserTeam = {
   id: string;
   name: string;
   description: string | null;
@@ -18,7 +18,7 @@ export type InsertTeam = {
   description?: string;
 };
 
-export async function getTeams(): Promise<UserTeams[]> {
+export async function getTeams(): Promise<UserTeam[]> {
   try {
     const session = await auth();
     if (!session?.user.id) {
