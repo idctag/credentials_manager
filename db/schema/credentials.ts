@@ -1,54 +1,38 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { teams } from "./teams";
-import { groups } from "./groups";
+import { teamsTable } from "./teams";
+import { groupsTable } from "./groups";
 import { relations } from "drizzle-orm";
-import { users } from "./users";
+import { usersTable } from "./users";
 import { credentialTypeEnum } from "./enums";
-import { databaseCredentials } from "./databaseCredentials";
-import { serviceCredentials } from "./serviceCredentials";
-import { serverCredentials } from "./serverCredentials";
-import { envCredentials } from "./envCredentials";
 
-export const credentials = pgTable("credentials", {
+export const credentialsTable = pgTable("credentials", {
   id: uuid("id").defaultRandom().notNull().primaryKey(),
   name: text("name").notNull(),
-  type: credentialTypeEnum("type").notNull().default("service"),
-  team_id: uuid("team_id").references(() => teams.id, {
+  type: credentialTypeEnum("type").notNull().default("server"),
+  team_id: uuid("team_id").references(() => teamsTable.id, {
     onDelete: "cascade",
   }),
-  owner_id: uuid("owner_id").references(() => users.id, {
+  owner_id: uuid("owner_id").references(() => usersTable.id, {
     onDelete: "cascade",
   }),
-  group_id: uuid("group_id").references(() => groups.id, {
+  group_id: uuid("group_id").references(() => groupsTable.id, {
     onDelete: "cascade",
   }),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const credentialsRelations = relations(credentials, ({ one }) => ({
-  team: one(teams, {
-    fields: [credentials.team_id],
-    references: [teams.id],
+export const credentialsRelations = relations(credentialsTable, ({ one }) => ({
+  team: one(teamsTable, {
+    fields: [credentialsTable.team_id],
+    references: [teamsTable.id],
   }),
-  group: one(groups, {
-    fields: [credentials.group_id],
-    references: [groups.id],
+  group: one(groupsTable, {
+    fields: [credentialsTable.group_id],
+    references: [groupsTable.id],
   }),
-  databaseCredential: one(databaseCredentials, {
-    fields: [credentials.id],
-    references: [databaseCredentials.credential_id],
-  }),
-  serviceCredential: one(serviceCredentials, {
-    fields: [credentials.id],
-    references: [serviceCredentials.credential_id],
-  }),
-  serverCredential: one(serverCredentials, {
-    fields: [credentials.id],
-    references: [serverCredentials.credential_id],
-  }),
-  envCredential: one(envCredentials, {
-    fields: [credentials.id],
-    references: [envCredentials.credential_id],
+  owner: one(usersTable, {
+    fields: [credentialsTable.owner_id],
+    references: [usersTable.id],
   }),
 }));

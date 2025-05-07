@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from "uuid"; // Install uuid if you haven't: npm install uuid @types/uuid
 import { AdapterAccountType } from "@auth/core/adapters"; // Import the type
-import { accounts, users } from "../schema";
+import { usersTable } from "../schema";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { accounts } from "../schema/auth";
 
 export async function seedGithubUser(db: PostgresJsDatabase, userId: string) {
   console.log("Starting database seeding for GitHub user...");
@@ -34,7 +34,7 @@ export async function seedGithubUser(db: PostgresJsDatabase, userId: string) {
   try {
     // Insert the user
     console.log(`Inserting user with ID: ${userId}`);
-    await db.insert(users).values(userData).onConflictDoNothing();
+    await db.insert(usersTable).values(userData).onConflictDoNothing();
 
     // Insert the account link
     console.log(`Inserting GitHub account link for user ID: ${userId}`);
@@ -43,8 +43,5 @@ export async function seedGithubUser(db: PostgresJsDatabase, userId: string) {
     console.log("GitHub user seeding complete!");
   } catch (error) {
     console.error("Error seeding database:", error);
-  } finally {
-    // Close the database connection if necessary
-    // await db.end(); // Uncomment if your db instance has an end method
   }
 }

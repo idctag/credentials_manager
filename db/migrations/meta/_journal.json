@@ -5,71 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1746283668192,
-      "tag": "0000_glorious_havok",
+      "when": 1746520287394,
+      "tag": "0000_yellow_toad",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1746412271082,
-      "tag": "0001_dear_johnny_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1746426181879,
-      "tag": "0002_massive_night_nurse",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1746426251786,
-      "tag": "0003_solid_naoko",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1746429876187,
-      "tag": "0004_rainy_patch",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1746437883418,
-      "tag": "0005_brown_metal_master",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1746456362284,
-      "tag": "0006_broken_stranger",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1746457027344,
-      "tag": "0007_silky_mach_iv",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1746457548676,
-      "tag": "0008_rainy_reaper",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1746458772911,
-      "tag": "0009_ambitious_kang",
+      "when": 1746521223530,
+      "tag": "0001_peaceful_stone_men",
       "breakpoints": true
     }
   ]

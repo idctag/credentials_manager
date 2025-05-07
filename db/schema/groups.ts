@@ -1,21 +1,29 @@
 import { pgTable, text, uuid } from "drizzle-orm/pg-core";
-import { users } from "./users";
+import { usersTable } from "./users";
 import { relations } from "drizzle-orm";
-import { teamGroups } from "./teamGroups";
-import { credentials } from "./credentials";
+import { credentialsTable } from "./credentials";
+import { teamsTable } from "./teams";
 
-export const groups = pgTable("groups", {
+export const groupsTable = pgTable("groups", {
   id: uuid("id").defaultRandom().notNull().primaryKey(),
   name: text("name").notNull(),
-  desription: text("description"),
-  owner_id: uuid("owner_id").references(() => users.id),
+  description: text("description"),
+  owner_id: uuid("owner_id")
+    .references(() => usersTable.id)
+    .notNull(),
+  team_id: uuid("team_id")
+    .references(() => teamsTable.id)
+    .notNull(),
 });
 
-export const groupsRelations = relations(groups, ({ many, one }) => ({
-  owner: one(users, {
-    fields: [groups.owner_id],
-    references: [users.id],
+export const groupsRelations = relations(groupsTable, ({ many, one }) => ({
+  owner: one(usersTable, {
+    fields: [groupsTable.owner_id],
+    references: [usersTable.id],
   }),
-  teams: many(teamGroups),
-  credentials: many(credentials),
+  teams: one(teamsTable, {
+    fields: [groupsTable.team_id],
+    references: [teamsTable.id],
+  }),
+  credentials: many(credentialsTable),
 }));
