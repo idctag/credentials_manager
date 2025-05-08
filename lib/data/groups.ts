@@ -5,33 +5,33 @@ import { db } from "@/db";
 import { credentialsTable, groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { SelectTeamCredential } from "./credentials";
+import { z } from "zod";
+import { CreateGroupSchema } from "@/components/forms/create-group";
 
-export type SelectTeamGroups = {
+export type Team = {
   id: string;
   name: string;
   description: string | null;
   owner_id: string | null;
 };
 
-export type SelectTeamGroupsWithCredentials = {
-  group: {
-    id: string;
-    name: string;
-    description: string | null;
-    owner_id: string | null;
-  };
-  credentials: SelectTeamCredential | null;
+export type TeamGroupsWithCreds = {
+  id: string;
+  name: string;
+  description: string | null;
+  owner_id: string | null;
+  credentials: SelectTeamCredential[] | null;
 };
 
-export async function getTeamGroups(
+export async function getTeamGroupsWithCreds(
   teamId: string,
-): Promise<SelectTeamGroups[]> {
+): Promise<TeamGroupsWithCreds[]> {
   try {
     const session = await auth();
     if (!session) {
       throw new Error("Failed to fetch credentials");
     }
-    const teamGroups = await db
+    const groups = await db
       .select({
         id: groupsTable.id,
         name: groupsTable.name,
@@ -40,45 +40,59 @@ export async function getTeamGroups(
       })
       .from(groupsTable)
       .where(eq(groupsTable.team_id, teamId));
+    const credentials = await db
+      .select({
+        id: credentialsTable.id,
+        name: credentialsTable.name,
+        type: credentialsTable.type,
+        team_id: credentialsTable.team_id,
+        owner_id: credentialsTable.owner_id,
+        group_id: credentialsTable.group_id,
+      })
+      .from(credentialsTable)
+      .where(eq(credentialsTable.team_id, teamId));
 
-    return teamGroups;
+    const result: TeamGroupsWithCreds[] = groups.map((group) => ({
+      ...group,
+      credentials:
+        credentials.filter((cred) => cred.group_id === group.id) || null,
+    }));
+
+    return result;
   } catch (err) {
-    console.log("Error fetching groups:", err);
     throw new Error("Failed to fetch groups");
   }
 }
 
-export async function getTeamGroupsWithCreds(
-  teamId: string,
-): Promise<SelectTeamGroupsWithCredentials[]> {
+export async function createGroup(
+  formData: z.infer<typeof CreateGroupSchema>,
+  activeTeamId: string,
+): Promise<Team> {
   try {
     const session = await auth();
     if (!session) {
       throw new Error("Failed to fetch credentials");
     }
-    const result = await db
-      .select({
-        group: {
-          id: groupsTable.id,
-          name: groupsTable.name,
-          description: groupsTable.description,
-          owner_id: groupsTable.owner_id,
-        },
-        credentials: {
-          id: credentialsTable.id,
-          name: credentialsTable.name,
-          type: credentialsTable.type,
-          team_id: credentialsTable.team_id,
-          owner_id: credentialsTable.owner_id,
-          group_id: credentialsTable.group_id,
-        },
+    const result: Team[] = await db
+      .insert(groupsTable)
+      .values({
+        name: formData.name,
+        description: formData.description,
+        team_id: activeTeamId,
+        owner_id: session.user.id,
       })
-      .from(groupsTable)
-      .leftJoin(credentialsTable, eq(groupsTable.team_id, teamId));
-
-    return result;
+      .returning({
+        id: groupsTable.id,
+        name: groupsTable.name,
+        description: groupsTable.description,
+        owner_id: groupsTable.owner_id,
+      });
+    const group = result[0];
+    if (!group) {
+      throw new Error("Failed to create group");
+    }
+    return group;
   } catch (err) {
-    console.log("Error fetching groups");
-    throw new Error("Failed to fetch groups");
+    throw new Error("Failed to create group");
   }
 }

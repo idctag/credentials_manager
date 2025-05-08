@@ -8,6 +8,7 @@ import {
 } from "../ui/sidebar";
 import { NavUser } from "./footer";
 import TeamSwitcher from "./team-switcher";
+import { NavMain } from "./nav-main";
 
 export default function AppSidebar({
   initialTeams,
@@ -19,7 +20,9 @@ export default function AppSidebar({
       <SidebarHeader>
         <TeamSwitcher initialTeams={initialTeams} />
       </SidebarHeader>
-      <SidebarContent>Content</SidebarContent>
+      <SidebarContent>
+        <NavMain />
+      </SidebarContent>
       <SidebarFooter>
         <NavUser />
       </SidebarFooter>
