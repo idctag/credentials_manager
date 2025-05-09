@@ -5,3 +5,4 @@ export const credentialTypeEnum = pgEnum("credential_type", [
   "db_connection",
   "server",
 ]);
+export type TeamRole = (typeof teamRoleEnum.enumValues)[number];

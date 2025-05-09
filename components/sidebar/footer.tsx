@@ -1,5 +1,5 @@
 "use client";
-import { LogOut, Plus } from "lucide-react";
+import { LogOut, PlusCircleIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -48,10 +48,10 @@ export function NavUser() {
               <DialogTrigger asChild>
                 <SidebarMenuButton
                   disabled={activeTeam === null}
-                  className="flex justify-center"
+                  className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground hover:cursor-pointer"
                 >
+                  <PlusCircleIcon />
                   <span> Add group</span>
-                  <Plus />
                 </SidebarMenuButton>
               </DialogTrigger>
             </SidebarMenuItem>
@@ -60,7 +60,7 @@ export function NavUser() {
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton>
+              <SidebarMenuButton className="py-6 hover:cursor-pointer">
                 <Avatar>
                   <AvatarImage
                     src={session.user.image || "#"}
@@ -102,7 +102,10 @@ export function NavUser() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()}>
+              <DropdownMenuItem
+                className="hover:cursor-pointer"
+                onClick={() => signOut()}
+              >
                 <LogOut />
                 Logout
               </DropdownMenuItem>

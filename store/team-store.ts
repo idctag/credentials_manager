@@ -17,7 +17,7 @@ const useTeamStore = create<TeamStore>((set) => ({
   addTeam: (team) =>
     set((state) => ({
       teams: [...state.teams, team],
-      activeTeam: state.activeTeam === null ? team : state.activeTeam,
+      activeTeam: team,
     })),
   updateTeam: (id, updatedTeam) =>
     set((state) => {

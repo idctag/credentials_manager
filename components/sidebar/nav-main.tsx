@@ -14,7 +14,7 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Folder } from "lucide-react";
 import useGroupStore from "@/store/group-store";
 
 export function NavMain() {
@@ -31,6 +31,7 @@ export function NavMain() {
                 tooltip={group.description || group.name}
               >
                 <Link href={"#"}>
+                  <Folder />
                   <span>{group.name}</span>
                 </Link>
               </SidebarMenuButton>

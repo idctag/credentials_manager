@@ -1,7 +1,5 @@
-"use client";
-
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
@@ -13,45 +11,34 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import useTeamStore from "@/store/team-store";
-import { toast } from "sonner";
-import { createGroup } from "@/lib/data/groups";
 import { useState } from "react";
 import { Loader } from "lucide-react";
-import useGroupStore from "@/store/group-store";
+import { toast } from "sonner";
+import { createTeam } from "@/lib/data/teams";
+import useTeamStore from "@/store/team-store";
 
-export const CreateGroupSchema = z.object({
-  name: z.string().min(2),
+export const CreateTeamSchema = z.object({
+  name: z.string().min(2).max(50),
   description: z.string(),
 });
 
-export function CreateGroupForm({ closeDialog }: { closeDialog: () => void }) {
-  const { activeTeam } = useTeamStore();
+export function CreateTeamForm({ closeDialog }: { closeDialog: () => void }) {
   const [isPending, setIsPending] = useState(false);
-  const { groups, setGroups } = useGroupStore();
-
-  const form = useForm<z.infer<typeof CreateGroupSchema>>({
-    resolver: zodResolver(CreateGroupSchema),
+  const { addTeam } = useTeamStore();
+  const form = useForm<z.infer<typeof CreateTeamSchema>>({
+    resolver: zodResolver(CreateTeamSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
-  async function onSubmit(values: z.infer<typeof CreateGroupSchema>) {
-    if (!activeTeam?.id) {
-      toast.error("Create or select Team first");
-      return;
-    }
-    setIsPending(true);
+
+  async function onSubmit(values: z.infer<typeof CreateTeamSchema>) {
     try {
-      const result = await createGroup(values, activeTeam.id);
+      const result = await createTeam(values);
       toast.success(`${result.name} Created succesfully`);
       form.reset();
-      const newGroup = {
-        ...result,
-        credentials: null,
-      };
-      setGroups([...groups, newGroup]);
+      addTeam(result);
       closeDialog();
     } catch (err) {
       toast.error("Failed to create group");
@@ -68,9 +55,9 @@ export function CreateGroupForm({ closeDialog }: { closeDialog: () => void }) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Group Name</FormLabel>
+              <FormLabel>Team name</FormLabel>
               <FormControl>
-                <Input placeholder="Server..." {...field} />
+                <Input placeholder="Team" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,9 +68,9 @@ export function CreateGroupForm({ closeDialog }: { closeDialog: () => void }) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Group description</FormLabel>
+              <FormLabel>Team description</FormLabel>
               <FormControl>
-                <Input placeholder="Server..." {...field} />
+                <Input placeholder="Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
