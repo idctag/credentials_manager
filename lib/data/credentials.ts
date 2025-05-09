@@ -3,18 +3,41 @@
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { credentialsTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
-export type SelectTeamCredential = {
+export type FetchCredential = {
   id: string;
   name: string;
   owner_id: string | null;
-  type: "db_connection" | "server";
 };
+
+export async function getGroupCredentials(
+  grouId: string,
+): Promise<FetchCredential[]> {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("Failed to fetch credentials");
+    }
+    const groupCredentials = await db
+      .select({
+        id: credentialsTable.id,
+        name: credentialsTable.name,
+        owner_id: credentialsTable.owner_id,
+      })
+      .from(credentialsTable)
+      .where(eq(credentialsTable.group_id, grouId));
+
+    return groupCredentials;
+  } catch (err) {
+    console.log("Error fetching credentials:", err);
+    throw new Error("Failed to fetch credentials");
+  }
+}
 
 export async function getTeamCredentials(
   teamId: string,
-): Promise<SelectTeamCredential[]> {
+): Promise<FetchCredential[]> {
   try {
     const session = await auth();
     if (!session) {
@@ -25,10 +48,14 @@ export async function getTeamCredentials(
         id: credentialsTable.id,
         name: credentialsTable.name,
         owner_id: credentialsTable.owner_id,
-        type: credentialsTable.type,
       })
       .from(credentialsTable)
-      .where(eq(credentialsTable.team_id, teamId));
+      .where(
+        and(
+          eq(credentialsTable.team_id, teamId),
+          isNull(credentialsTable.group_id),
+        ),
+      );
 
     return teamCredentials;
   } catch (err) {

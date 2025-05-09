@@ -1,9 +1,9 @@
-import { TeamGroupsWithCreds } from "@/lib/data/groups";
+import { FetchGroupWithCredentials } from "@/lib/data/groups";
 import { create } from "zustand";
 
 type GroupStore = {
-  groups: TeamGroupsWithCreds[];
-  setGroups: (groups: TeamGroupsWithCreds[] | null) => void;
+  groups: FetchGroupWithCredentials[];
+  setGroups: (groups: FetchGroupWithCredentials[] | null) => void;
 };
 
 const useGroupStore = create<GroupStore>((set) => ({

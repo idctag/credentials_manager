@@ -3,12 +3,12 @@ import { teamsTable } from "./teams";
 import { groupsTable } from "./groups";
 import { relations } from "drizzle-orm";
 import { usersTable } from "./users";
-import { credentialTypeEnum } from "./enums";
+import { databaseCredentialTable } from "./database_credentials";
+import { serverCredentialTable } from "./server_credentials";
 
 export const credentialsTable = pgTable("credentials", {
   id: uuid("id").defaultRandom().notNull().primaryKey(),
   name: text("name").notNull(),
-  type: credentialTypeEnum("type").notNull().default("server"),
   team_id: uuid("team_id").references(() => teamsTable.id, {
     onDelete: "cascade",
   }),
@@ -22,17 +22,22 @@ export const credentialsTable = pgTable("credentials", {
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const credentialsRelations = relations(credentialsTable, ({ one }) => ({
-  team: one(teamsTable, {
-    fields: [credentialsTable.team_id],
-    references: [teamsTable.id],
+export const credentialsRelations = relations(
+  credentialsTable,
+  ({ one, many }) => ({
+    team: one(teamsTable, {
+      fields: [credentialsTable.team_id],
+      references: [teamsTable.id],
+    }),
+    group: one(groupsTable, {
+      fields: [credentialsTable.group_id],
+      references: [groupsTable.id],
+    }),
+    owner: one(usersTable, {
+      fields: [credentialsTable.owner_id],
+      references: [usersTable.id],
+    }),
+    databases: many(databaseCredentialTable),
+    servers: many(serverCredentialTable),
   }),
-  group: one(groupsTable, {
-    fields: [credentialsTable.group_id],
-    references: [groupsTable.id],
-  }),
-  owner: one(usersTable, {
-    fields: [credentialsTable.owner_id],
-    references: [usersTable.id],
-  }),
-}));
+);

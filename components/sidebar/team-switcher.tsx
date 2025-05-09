@@ -15,7 +15,6 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 import useTeamStore from "@/store/team-store";
-import { UserTeam } from "@/lib/data/teams";
 import { useEffect, useState } from "react";
 import { getTeamGroupsWithCreds } from "@/lib/data/groups";
 import useGroupStore from "@/store/group-store";
@@ -29,21 +28,11 @@ import {
 } from "../ui/dialog";
 import { CreateTeamForm } from "../forms/create-team";
 
-export default function TeamSwitcher({
-  initialTeams,
-}: {
-  initialTeams: UserTeam[];
-}) {
+export default function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const { teams, setTeams, setActiveTeam, activeTeam } = useTeamStore();
+  const { teams, setActiveTeam, activeTeam } = useTeamStore();
   const [isOpen, setIsOpen] = useState(false);
   const { setGroups } = useGroupStore();
-  useEffect(() => {
-    if (initialTeams.length > 0) {
-      setTeams(initialTeams);
-      setActiveTeam(initialTeams[0]);
-    }
-  }, [initialTeams, setTeams, setActiveTeam]);
 
   useEffect(() => {
     async function fetchGroups() {
@@ -99,7 +88,7 @@ export default function TeamSwitcher({
               ))}
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <DialogTrigger className="flex gap-2 p-2">
+                <DialogTrigger className="flex gap-2 p-2 hover:cursor-pointer">
                   <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                     <Plus className="size-4" />
                   </div>

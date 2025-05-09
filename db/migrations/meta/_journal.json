@@ -15,6 +15,13 @@
       "when": 1746521223530,
       "tag": "0001_peaceful_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746771688347,
+      "tag": "0002_parallel_mother_askani",
+      "breakpoints": true
     }
   ]
 }
