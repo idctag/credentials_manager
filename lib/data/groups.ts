@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/db";
-import { credentialsTable, groupsTable } from "@/db/schema";
+import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { FetchCredential, getGroupCredentials } from "./credentials";
 import { z } from "zod";
@@ -23,7 +23,7 @@ export type FetchGroup = {
   team_id: string;
 };
 
-export type FetchGroupWithCredentials = FetchGroup & {
+export type GroupWithCredentials = FetchGroup & {
   credentials: FetchCredential[] | null;
 };
 
@@ -45,7 +45,7 @@ export async function getTeamGroups(teamId: string): Promise<FetchGroup[]> {
 
 export async function getTeamGroupsWithCreds(
   teamId: string,
-): Promise<FetchGroupWithCredentials[]> {
+): Promise<GroupWithCredentials[]> {
   try {
     const session = await auth();
     if (!session) {
@@ -70,13 +70,13 @@ export async function getTeamGroupsWithCreds(
 export async function createGroup(
   formData: z.infer<typeof CreateGroupSchema>,
   activeTeamId: string,
-): Promise<Team> {
+): Promise<FetchGroup> {
   try {
     const session = await auth();
     if (!session) {
       throw new Error("Failed to fetch credentials");
     }
-    const result: Team[] = await db
+    const result: FetchGroup[] = await db
       .insert(groupsTable)
       .values({
         name: formData.name,
@@ -89,6 +89,7 @@ export async function createGroup(
         name: groupsTable.name,
         description: groupsTable.description,
         owner_id: groupsTable.owner_id,
+        team_id: groupsTable.team_id,
       });
     const group = result[0];
     if (!group) {

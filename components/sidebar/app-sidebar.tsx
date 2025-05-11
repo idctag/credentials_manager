@@ -11,17 +11,20 @@ import { NavMain } from "./nav-group";
 import { NavCredentials } from "./nav-credentials";
 import useTeamStore from "@/store/team-store";
 import { useEffect } from "react";
-import { auth } from "@/auth";
+import { getAllUserCredentialsData } from "@/lib/data/user";
 
 export default function AppSidebar() {
-  const { activeTeam, setTeams } = useTeamStore();
+  const { setTeams, setActiveTeam } = useTeamStore();
   useEffect(() => {
     async function fetchData() {
-      try (
-
-      )
+      const response = await getAllUserCredentialsData();
+      setTeams(response.teams);
+      const newActiveTeam = response.teams[0] || null;
+      setActiveTeam(newActiveTeam);
+      console.log(response);
     }
-  })
+    fetchData();
+  }, [setTeams, setActiveTeam]);
   return (
     <Sidebar>
       <SidebarHeader>

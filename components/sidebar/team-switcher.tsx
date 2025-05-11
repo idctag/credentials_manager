@@ -15,9 +15,7 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 import useTeamStore from "@/store/team-store";
-import { useEffect, useState } from "react";
-import { getTeamGroupsWithCreds } from "@/lib/data/groups";
-import useGroupStore from "@/store/group-store";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -30,25 +28,8 @@ import { CreateTeamForm } from "../forms/create-team";
 
 export default function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const { teams, setActiveTeam, activeTeam } = useTeamStore();
+  const { data, setActiveTeam, activeTeam } = useTeamStore();
   const [isOpen, setIsOpen] = useState(false);
-  const { setGroups } = useGroupStore();
-
-  useEffect(() => {
-    async function fetchGroups() {
-      if (activeTeam?.id) {
-        try {
-          const teamGroups = await getTeamGroupsWithCreds(activeTeam.id);
-          setGroups(teamGroups);
-        } catch (error) {
-          setGroups([]);
-        }
-      } else {
-        setGroups([]);
-      }
-    }
-    fetchGroups();
-  }, [activeTeam, setGroups]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -77,7 +58,7 @@ export default function TeamSwitcher() {
               <DropdownMenuLabel className="text-xs text-muted-foreground">
                 Teams
               </DropdownMenuLabel>
-              {teams.map((team) => (
+              {data.teams.map((team) => (
                 <DropdownMenuItem
                   key={team.name}
                   onClick={() => setActiveTeam(team)}

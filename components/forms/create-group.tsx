@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { createGroup } from "@/lib/data/groups";
 import { useState } from "react";
 import { Loader } from "lucide-react";
-import useGroupStore from "@/store/group-store";
 
 export const CreateGroupSchema = z.object({
   name: z.string().min(2),
@@ -28,8 +27,7 @@ export const CreateGroupSchema = z.object({
 export function CreateGroupForm({ closeDialog }: { closeDialog: () => void }) {
   const { activeTeam } = useTeamStore();
   const [isPending, setIsPending] = useState(false);
-  const { groups, setGroups } = useGroupStore();
-
+  const { addGroup } = useTeamStore();
   const form = useForm<z.infer<typeof CreateGroupSchema>>({
     resolver: zodResolver(CreateGroupSchema),
     defaultValues: {
@@ -51,7 +49,7 @@ export function CreateGroupForm({ closeDialog }: { closeDialog: () => void }) {
         ...result,
         credentials: null,
       };
-      setGroups([...groups, newGroup]);
+      addGroup(newGroup);
       closeDialog();
     } catch (err) {
       toast.error("Failed to create group");
