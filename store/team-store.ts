@@ -1,39 +1,43 @@
-import { UserTeam } from "@/lib/data/teams";
+import { GroupWithCredentials } from "@/lib/data/groups";
+import { AllUserCredentialData, UserTeamWithData } from "@/lib/data/user";
 import { create } from "zustand";
 
 type TeamStore = {
-  teams: UserTeam[];
-  activeTeam: UserTeam | null;
-  setActiveTeam: (team: UserTeam | null) => void;
-  addTeam: (team: UserTeam) => void;
-  setTeams: (teams: UserTeam[] | null) => void;
-  updateTeam: (id: string, updateTeam: Partial<UserTeam>) => void;
+  data: AllUserCredentialData;
+  activeTeam: UserTeamWithData | null;
+  setActiveTeam: (team: UserTeamWithData | null) => void;
+  addTeam: (team: UserTeamWithData) => void;
+  setTeams: (teams: UserTeamWithData[] | null) => void;
+  addGroup: (group: GroupWithCredentials) => void;
 };
 const useTeamStore = create<TeamStore>((set) => ({
-  teams: [],
+  data: { teams: [] },
   activeTeam: null,
   setActiveTeam: (team) => set({ activeTeam: team }),
-  setTeams: (teams) => set({ teams: teams ? teams : [] }),
+  setTeams: (teams) => set({ data: { teams: teams || [] } }),
   addTeam: (team) =>
     set((state) => ({
-      teams: [...state.teams, team],
+      data: { teams: [...state.data.teams, team] },
       activeTeam: team,
     })),
-  updateTeam: (id, updatedTeam) =>
+  addGroup: (group) =>
     set((state) => {
-      const updatedTeams = state.teams.map((team) =>
-        team.id === id ? { ...team, ...updatedTeam } : team,
+      if (!state.activeTeam) {
+        console.warn("No active team selected");
+        return state;
+      }
+      const updateTeams = state.data.teams.map((team) =>
+        team.id === state.activeTeam?.id
+          ? { ...team, groups: [...team.groups, group] }
+          : team,
       );
-
-      // Update the active team if it was modified
-      const newActiveTeam =
-        state.activeTeam?.id === id
-          ? updatedTeams.find((team) => team.id === id) || state.activeTeam
-          : state.activeTeam;
-
+      const updateActiveTeam = {
+        ...state.activeTeam,
+        groups: [...state.activeTeam.groups, group],
+      };
       return {
-        teams: updatedTeams,
-        activeTeam: newActiveTeam,
+        data: { teams: updateTeams },
+        activeTeam: updateActiveTeam,
       };
     }),
 }));

@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/auth";
 import { FetchCredential } from "./credentials";
 import { UserTeam } from "./teams";
@@ -9,14 +11,14 @@ import {
   userTeamsTable,
 } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
-import { FetchGroupWithCredentials } from "./groups";
+import { GroupWithCredentials } from "./groups";
 
 export type AllUserCredentialData = {
   teams: UserTeamWithData[];
 };
 
 export type UserTeamWithData = UserTeam & {
-  groups: FetchGroupWithCredentials[];
+  groups: GroupWithCredentials[];
   credentials: FetchCredential[];
 };
 
@@ -89,6 +91,7 @@ export async function getAllUserCredentialsData(): Promise<AllUserCredentialData
     );
     return { teams: teamsWithData };
   } catch (err) {
+    console.log(err);
     throw new Error("Failed to fetch User All credentials data");
   }
 }
