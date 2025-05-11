@@ -34,11 +34,7 @@ export const CreateCredentialSchema = z.object({
     .optional(),
 });
 
-export function CreateCredentialForm({
-  closeDialog,
-}: {
-  closeDialog: () => void;
-}) {
+export function CreateCredentialForm() {
   const [isPending, setIsPending] = useState(false);
   const form = useForm<z.infer<typeof CreateCredentialSchema>>({
     resolver: zodResolver(CreateCredentialSchema),

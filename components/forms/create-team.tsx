@@ -16,6 +16,7 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { createTeam } from "@/lib/data/teams";
 import useTeamStore from "@/store/team-store";
+import { UserTeamWithData } from "@/lib/data/user";
 
 export const CreateTeamSchema = z.object({
   name: z.string().min(2).max(50),
@@ -38,7 +39,12 @@ export function CreateTeamForm({ closeDialog }: { closeDialog: () => void }) {
       const result = await createTeam(values);
       toast.success(`${result.name} Created succesfully`);
       form.reset();
-      addTeam(result);
+      const newTeam: UserTeamWithData = {
+        groups: [],
+        credentials: [],
+        ...result,
+      };
+      addTeam(newTeam);
       closeDialog();
     } catch (err) {
       toast.error("Failed to create group");
