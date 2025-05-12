@@ -6,7 +6,8 @@ import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { FetchCredential, getGroupCredentials } from "./credentials";
 import { z } from "zod";
-import { CreateGroupSchema } from "@/components/forms/create-group";
+import { CreateGroupSchema } from "@/components/sidebar/components/creat-group-button";
+import { toast } from "sonner";
 
 export type Team = {
   id: string;
@@ -98,5 +99,17 @@ export async function createGroup(
     return group;
   } catch (err) {
     throw new Error("Failed to create group");
+  }
+}
+
+export async function deleteGroup(groupId: string) {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("Failed to delete group");
+    }
+    await db.delete(groupsTable).where(eq(groupsTable.id, groupId));
+  } catch (err) {
+    throw new Error("Failed to delete group");
   }
 }

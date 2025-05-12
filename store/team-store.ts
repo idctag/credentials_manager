@@ -9,6 +9,7 @@ type TeamStore = {
   addTeam: (team: UserTeamWithData) => void;
   setTeams: (teams: UserTeamWithData[] | null) => void;
   addGroup: (group: GroupWithCredentials) => void;
+  deleteGroup: (groupId: string) => void;
 };
 const useTeamStore = create<TeamStore>((set) => ({
   data: { teams: [] },
@@ -34,6 +35,29 @@ const useTeamStore = create<TeamStore>((set) => ({
       const updateActiveTeam = {
         ...state.activeTeam,
         groups: [...state.activeTeam.groups, group],
+      };
+      return {
+        data: { teams: updateTeams },
+        activeTeam: updateActiveTeam,
+      };
+    }),
+  deleteGroup: (groupId) =>
+    set((state) => {
+      if (!state.activeTeam) {
+        console.warn("No active team selected");
+        return state;
+      }
+      const updateTeams = state.data.teams.map((team) =>
+        team.id === state.activeTeam?.id
+          ? {
+            ...team,
+            groups: team.groups.filter((group) => group.id !== groupId),
+          }
+          : team,
+      );
+      const updateActiveTeam = {
+        ...state.activeTeam,
+        groups: state.activeTeam.groups.filter((group) => group.id !== groupId),
       };
       return {
         data: { teams: updateTeams },
