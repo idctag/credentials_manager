@@ -11,7 +11,9 @@ export const databaseCredentialTable = pgTable("database_credentials", {
   password: varchar("password", { length: 255 }),
   connection_string: varchar("connection_string", { length: 500 }),
   description: text("description"),
-  credential_id: uuid("credential_id").references(() => credentialsTable.id),
+  credential_id: uuid("credential_id")
+    .references(() => credentialsTable.id)
+    .notNull(),
 });
 
 export const databaseCredentialRelations = relations(

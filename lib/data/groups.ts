@@ -4,17 +4,10 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { FetchCredential, getGroupCredentials } from "./credentials";
+import { FetchCredentialType } from "./credentials";
 import { z } from "zod";
 import { CreateGroupSchema } from "@/components/sidebar/components/creat-group-button";
-import { toast } from "sonner";
-
-export type Team = {
-  id: string;
-  name: string;
-  description: string | null;
-  owner_id: string | null;
-};
+import { Status } from "./user";
 
 export type FetchGroup = {
   id: string;
@@ -25,48 +18,8 @@ export type FetchGroup = {
 };
 
 export type GroupWithCredentials = FetchGroup & {
-  credentials: FetchCredential[] | null;
+  credentials: FetchCredentialType[] | null;
 };
-
-export async function getTeamGroups(teamId: string): Promise<FetchGroup[]> {
-  try {
-    const session = await auth();
-    if (!session) {
-      throw new Error("Failed to fetch groups");
-    }
-    const groups = await db
-      .select()
-      .from(groupsTable)
-      .where(eq(groupsTable.team_id, teamId));
-    return groups;
-  } catch (err) {
-    throw new Error("Failed to fetch groups");
-  }
-}
-
-export async function getTeamGroupsWithCreds(
-  teamId: string,
-): Promise<GroupWithCredentials[]> {
-  try {
-    const session = await auth();
-    if (!session) {
-      throw new Error("Failed to fetch groups");
-    }
-    const groups = await getTeamGroups(teamId);
-    const groupsWithCredentials = await Promise.all(
-      groups.map(async (group) => {
-        const groupCredentials = await getGroupCredentials(group.id);
-        return {
-          ...group,
-          credentials: groupCredentials.length > 0 ? groupCredentials : null,
-        };
-      }),
-    );
-    return groupsWithCredentials;
-  } catch (err) {
-    throw new Error("Failed to fetch groups");
-  }
-}
 
 export async function createGroup(
   formData: z.infer<typeof CreateGroupSchema>,
@@ -102,14 +55,21 @@ export async function createGroup(
   }
 }
 
-export async function deleteGroup(groupId: string) {
+export async function deleteGroup(groupId: string): Promise<Status> {
   try {
     const session = await auth();
     if (!session) {
       throw new Error("Failed to delete group");
     }
-    await db.delete(groupsTable).where(eq(groupsTable.id, groupId));
+    const name = await db
+      .delete(groupsTable)
+      .where(eq(groupsTable.id, groupId))
+      .returning({ name: groupsTable.name });
+    return {
+      status: "success",
+      message: `Group ${JSON.stringify(name[0].name)} has been deleted successfully`,
+    };
   } catch (err) {
-    throw new Error("Failed to delete group");
+    return { status: "failed", message: `Failed to deleted group` };
   }
 }

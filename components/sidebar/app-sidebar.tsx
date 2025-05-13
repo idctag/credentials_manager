@@ -21,7 +21,6 @@ export default function AppSidebar() {
       setTeams(response.teams);
       const newActiveTeam = response.teams[0] || null;
       setActiveTeam(newActiveTeam);
-      console.log(response);
     }
     fetchData();
   }, [setTeams, setActiveTeam]);

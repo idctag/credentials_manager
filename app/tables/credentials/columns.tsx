@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,44 +7,47 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteGroup, GroupWithCredentials } from "@/lib/data/groups";
+import { deleteCredential, FetchCredentialType } from "@/lib/data/credentials";
 import useTeamStore from "@/store/team-store";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
-export const groupColumns: ColumnDef<GroupWithCredentials>[] = [
+export const credentialColumns: ColumnDef<FetchCredentialType>[] = [
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "servers",
+    header: "Servers",
+    cell: ({ row }) => {
+      const cred = row.original;
+      return <span>{cred.servers?.length}</span>;
+    },
   },
   {
-    accessorKey: "credentials",
-    header: "Credentials",
+    accessorKey: "databases",
+    header: "Databases",
     cell: ({ row }) => {
-      const creds = row.original;
-      return <span>{creds.credentials?.length}</span>;
+      const cred = row.original;
+      return <span>{cred.databases?.length}</span>;
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const group = row.original;
-      const { removeGroup } = useTeamStore();
+      const credential = row.original;
+      const { removeCredential } = useTeamStore();
       const onDelete = async () => {
-        const res = await deleteGroup(group.id);
+        const res = await deleteCredential(credential.id);
         if (res.status === "success") {
           toast.success(res.message);
-          removeGroup(group.id);
+          removeCredential(credential.id);
         } else {
           toast.error(res.message);
         }
       };
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

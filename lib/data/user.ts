@@ -1,17 +1,21 @@
 "use server";
 
 import { auth } from "@/auth";
-import { FetchCredential } from "./credentials";
 import { UserTeam } from "./teams";
 import { db } from "@/db";
-import {
-  credentialsTable,
-  groupsTable,
-  teamsTable,
-  userTeamsTable,
-} from "@/db/schema";
-import { and, eq, isNull } from "drizzle-orm";
+import { groupsTable, teamsTable, userTeamsTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { GroupWithCredentials } from "./groups";
+import {
+  FetchCredentialType,
+  getGroupCredentials,
+  getTeamCredentials,
+} from "./credentials";
+
+export type Status = {
+  status: "failed" | "success";
+  message?: string;
+};
 
 export type AllUserCredentialData = {
   teams: UserTeamWithData[];
@@ -19,7 +23,7 @@ export type AllUserCredentialData = {
 
 export type UserTeamWithData = UserTeam & {
   groups: GroupWithCredentials[];
-  credentials: FetchCredential[];
+  credentials: FetchCredentialType[];
 };
 
 export async function getAllUserCredentialsData(): Promise<AllUserCredentialData> {
@@ -54,14 +58,7 @@ export async function getAllUserCredentialsData(): Promise<AllUserCredentialData
           .where(eq(groupsTable.team_id, team.id));
         const groupsWithCredentials = await Promise.all(
           groups.map(async (group) => {
-            const groupCredentials = await db
-              .select({
-                id: credentialsTable.id,
-                name: credentialsTable.name,
-                owner_id: credentialsTable.owner_id,
-              })
-              .from(credentialsTable)
-              .where(eq(credentialsTable.group_id, group.id));
+            const groupCredentials = await getGroupCredentials(group.id);
 
             return {
               ...group,
@@ -69,19 +66,7 @@ export async function getAllUserCredentialsData(): Promise<AllUserCredentialData
             };
           }),
         );
-        const teamCredentials = await db
-          .select({
-            id: credentialsTable.id,
-            name: credentialsTable.name,
-            owner_id: credentialsTable.owner_id,
-          })
-          .from(credentialsTable)
-          .where(
-            and(
-              eq(credentialsTable.team_id, team.id),
-              isNull(credentialsTable.group_id),
-            ),
-          );
+        const teamCredentials = await getTeamCredentials(team.id);
         return {
           ...team,
           groups: groupsWithCredentials,
