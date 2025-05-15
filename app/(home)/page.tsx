@@ -1,10 +1,10 @@
 "use client";
 import useTeamStore from "@/store/team-store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/tables/data-table";
 import { groupColumns } from "@/components/tables/groups/colums";
 import { credentialColumns } from "@/components/tables/credentials/columns";
+import EditTeamButton from "@/components/forms/edit-team";
 
 export default function Home() {
   const { activeTeam } = useTeamStore();
@@ -16,7 +16,7 @@ export default function Home() {
             <TabsTrigger value="groups">Groups</TabsTrigger>
             <TabsTrigger value="credentials">Credentials</TabsTrigger>
           </TabsList>
-          <Button>Edit Team</Button>
+          <EditTeamButton />
         </div>
         <TabsContent value="groups">
           <DataTable columns={groupColumns} data={activeTeam?.groups || []} />
