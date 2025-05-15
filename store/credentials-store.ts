@@ -1,11 +1,11 @@
-import { FetchCredential } from "@/lib/data/credentials";
+import { FetchCredentialType } from "@/lib/data/credentials";
 import { create } from "zustand";
 
 //
 type CredentialsStore = {
-  credentials: FetchCredential[];
-  setCredentials: (credentials: FetchCredential[] | null) => void;
-  addCredential: (credential: FetchCredential) => void;
+  credentials: FetchCredentialType[];
+  setCredentials: (credentials: FetchCredentialType[] | null) => void;
+  addCredential: (credential: FetchCredentialType) => void;
 };
 
 const useCredentialsStore = create<CredentialsStore>((set) => ({

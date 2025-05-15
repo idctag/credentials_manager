@@ -9,7 +9,7 @@ export const serverCredentialTable = pgTable("server_credentials", {
   type: credentialTypeEnum("type").notNull().default("server"),
   username: varchar("username", { length: 255 }),
   password: varchar("password", { length: 255 }),
-  url: varchar("server_address", { length: 500 }),
+  server_address: varchar("server_address", { length: 500 }),
   description: text("description"),
   credential_id: uuid("credential_id").references(() => credentialsTable.id),
 });
