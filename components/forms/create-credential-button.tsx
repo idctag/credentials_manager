@@ -1,5 +1,5 @@
 import { credentialTypeEnum } from "@/db/schema";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useTeamStore from "@/store/team-store";
@@ -57,13 +57,45 @@ export default function CreateCredentialButton(groupId: string | null) {
       servers: [],
     },
   });
+  const {
+    fields: serverFields,
+    append: appendServer,
+    remove: removeServer,
+  } = useFieldArray({
+    control: form.control,
+    name: "servers",
+  });
+  const {
+    fields: databaseFields,
+    append: appendDatabase,
+    remove: removeDatabase,
+  } = useFieldArray({
+    control: form.control,
+    name: "databases",
+  });
   async function onSubmit(values: z.infer<typeof CreateCredentialSchema>) {
+    console.log(values);
     if (!activeTeam?.id) {
       toast.error("Create or select Team first");
       return;
     }
-    setIsPending(true);
   }
+  const defaultServer = {
+    name: "",
+    username: "",
+    password: "",
+    server_address: "",
+    description: "",
+    type: credentialTypeEnum.enumValues[1],
+  };
+  const defaultDatabase = {
+    name: "",
+    username: "",
+    password: "",
+    connection_string: "",
+    description: "",
+    type: credentialTypeEnum.enumValues[0],
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>

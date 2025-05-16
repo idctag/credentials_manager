@@ -7,6 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import useTeamStore from "@/store/team-store";
+import { useForm } from "react-hook-form";
 
 export const EditTeamSchema = z.object({
   name: z.string(),
@@ -14,6 +16,13 @@ export const EditTeamSchema = z.object({
 });
 
 export default function EditTeamButton() {
+  const { activeTeam } = useTeamStore();
+  const form = useForm<z.infer<typeof EditTeamSchema>>({
+    defaultValues: {
+      name: activeTeam?.name,
+      description: activeTeam?.description || "",
+    },
+  });
   return (
     <Dialog>
       <DialogTrigger asChild>
