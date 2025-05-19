@@ -15,6 +15,7 @@ import {
 export type Status = {
   status: "failed" | "success";
   message?: string;
+  id?: string;
 };
 
 export type AllUserCredentialData = {

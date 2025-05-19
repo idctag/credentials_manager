@@ -240,7 +240,11 @@ export async function createCredential(
         }),
       );
     }
-    return { status: "success", message: "Credential created" };
+    return {
+      status: "success",
+      message: "Credential created",
+      id: credential[0].id,
+    };
   } catch (err) {
     return { status: "failed", message: JSON.stringify(err) };
   }

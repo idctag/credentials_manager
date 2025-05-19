@@ -31,7 +31,7 @@ export function NavCredentials() {
       <SidebarMenu>
         {activeTeam?.credentials
           ? activeTeam.credentials.map((item) => (
-              <SidebarMenuItem key={item.name}>
+              <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton asChild>
                   <Link href="#">
                     <span>{item.name}</span>

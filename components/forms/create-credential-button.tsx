@@ -17,8 +17,9 @@ import { PlusCircleIcon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { createCredential } from "@/lib/data/credentials";
+import { createCredential, getFullCredential } from "@/lib/data/credentials";
 import { toast } from "sonner";
+import { useCredentialStore } from "@/store";
 
 export const CreateCredentialSchema = z.object({
   name: z.string().min(2),
@@ -50,6 +51,7 @@ export default function CreateCredentialButton({
   groupId?: string;
 }) {
   const { activeTeam } = useTeamStore();
+  const { addCredential } = useCredentialStore();
   const [isPending, setIsPending] = useState(false);
   const form = useForm<z.infer<typeof CreateCredentialSchema>>({
     resolver: zodResolver(CreateCredentialSchema),
@@ -80,16 +82,24 @@ export default function CreateCredentialButton({
       toast.error("Create or select team first");
       return;
     }
+    setIsPending(true);
     try {
-      setIsPending(true);
       const result = await createCredential(values, activeTeam.id, groupId);
-      if (result.status === "success") {
-        toast.success(result.message);
-        form.reset();
-      } else {
+      if (result.status !== "success" || !result.id) {
         toast.error(result.message);
+        throw new Error(result.message || "Failed to create credential");
       }
+      const cred = await getFullCredential(result.id);
+      if (!cred) {
+        toast.error("Failed to fetch credential details");
+        throw new Error("Failed to fetch credential details");
+      }
+
+      const storeGroupId = groupId ? groupId : undefined;
+      addCredential(cred, storeGroupId);
+      form.reset();
     } catch (err) {
+      console.log(err);
       toast.error(`Failed to create credential: ${JSON.stringify(err)}`);
     } finally {
       setIsPending(false);
