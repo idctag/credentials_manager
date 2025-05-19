@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteCredential, FetchCredentialType } from "@/lib/data/credentials";
-import useTeamStore from "@/store/team-store";
+import { useCredentialStore } from "@/store";
+import useTeamStore from "@/store/teams";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
@@ -38,7 +39,7 @@ export const credentialColumns: ColumnDef<FetchCredentialType>[] = [
     id: "actions",
     cell: ({ row }) => {
       const credential = row.original;
-      const { removeCredential } = useTeamStore();
+      const { removeCredential } = useCredentialStore();
       const onDelete = async () => {
         const res = await deleteCredential(credential.id);
         if (res.status === "success") {

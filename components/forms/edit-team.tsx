@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import useTeamStore from "@/store/team-store";
+import useTeamStore from "@/store/teams";
 import { useForm } from "react-hook-form";
 
 export const EditTeamSchema = z.object({

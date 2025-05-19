@@ -15,7 +15,7 @@ import {
 } from "../ui/collapsible";
 import Link from "next/link";
 import { ChevronRight, Folder } from "lucide-react";
-import useTeamStore from "@/store/team-store";
+import useTeamStore from "@/store/teams";
 
 export function NavMain() {
   const { activeTeam } = useTeamStore();

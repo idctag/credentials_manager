@@ -15,8 +15,8 @@ import { useState } from "react";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { createTeam } from "@/lib/data/teams";
-import useTeamStore from "@/store/team-store";
 import { UserTeamWithData } from "@/lib/data/user";
+import { useTeamStore } from "@/store";
 
 export const CreateTeamSchema = z.object({
   name: z.string().min(2).max(50),
@@ -36,6 +36,7 @@ export function CreateTeamForm({ closeDialog }: { closeDialog: () => void }) {
 
   async function onSubmit(values: z.infer<typeof CreateTeamSchema>) {
     try {
+      setIsPending(true);
       const result = await createTeam(values);
       toast.success(`${result.name} Created succesfully`);
       form.reset();

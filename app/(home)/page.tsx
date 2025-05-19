@@ -1,5 +1,5 @@
 "use client";
-import useTeamStore from "@/store/team-store";
+import useTeamStore from "@/store/teams";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/tables/data-table";
 import { groupColumns } from "@/components/tables/groups/colums";

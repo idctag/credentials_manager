@@ -6,7 +6,7 @@ import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { FetchCredentialType } from "./credentials";
 import { z } from "zod";
-import { CreateGroupSchema } from "@/components/sidebar/components/creat-group-button";
+import { CreateGroupSchema } from "@/components/forms/creat-group-button";
 import { Status } from "./user";
 
 export type FetchGroup = {

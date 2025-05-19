@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteGroup, GroupWithCredentials } from "@/lib/data/groups";
-import useTeamStore from "@/store/team-store";
+import { useGroupStore } from "@/store";
+import useTeamStore from "@/store/teams";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
@@ -36,7 +37,7 @@ export const groupColumns: ColumnDef<GroupWithCredentials>[] = [
     id: "actions",
     cell: ({ row }) => {
       const group = row.original;
-      const { removeGroup } = useTeamStore();
+      const { removeGroup } = useGroupStore();
       const onDelete = async () => {
         const res = await deleteGroup(group.id);
         if (res.status === "success") {

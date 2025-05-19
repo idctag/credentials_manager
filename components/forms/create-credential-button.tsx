@@ -1,10 +1,8 @@
-"use client";
 import { credentialTypeEnum } from "@/db/schema";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useTeamStore from "@/store/team-store";
-import { toast } from "sonner";
+import useTeamStore from "@/store/teams";
 import { useState } from "react";
 import {
   Dialog,
@@ -19,32 +17,30 @@ import { PlusCircleIcon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { createCredential } from "@/lib/data/credentials";
+import { toast } from "sonner";
 
 export const CreateCredentialSchema = z.object({
   name: z.string().min(2),
   servers: z.array(
-    z
-      .object({
-        name: z.string().min(2),
-        username: z.string(),
-        password: z.string(),
-        server_address: z.string(),
-        description: z.string(),
-        type: z.enum(credentialTypeEnum.enumValues),
-      })
-      .optional(),
+    z.object({
+      name: z.string().min(2),
+      username: z.string(),
+      password: z.string(),
+      server_address: z.string(),
+      description: z.string(),
+      type: z.enum(credentialTypeEnum.enumValues),
+    }),
   ),
   databases: z.array(
-    z
-      .object({
-        name: z.string().min(2),
-        username: z.string(),
-        password: z.string(),
-        connection_string: z.string(),
-        description: z.string(),
-        type: z.enum(credentialTypeEnum.enumValues),
-      })
-      .optional(),
+    z.object({
+      name: z.string().min(2),
+      username: z.string(),
+      password: z.string(),
+      connection_string: z.string(),
+      description: z.string(),
+      type: z.enum(credentialTypeEnum.enumValues),
+    }),
   ),
 });
 
@@ -80,10 +76,23 @@ export default function CreateCredentialButton({
     name: "databases",
   });
   async function onSubmit(values: z.infer<typeof CreateCredentialSchema>) {
-    console.log(values);
-    if (!activeTeam?.id) {
-      toast.error("Create or select Team first");
+    if (!activeTeam) {
+      toast.error("Create or select team first");
       return;
+    }
+    try {
+      setIsPending(true);
+      const result = await createCredential(values, activeTeam.id, groupId);
+      if (result.status === "success") {
+        toast.success(result.message);
+        form.reset();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (err) {
+      toast.error(`Failed to create credential: ${JSON.stringify(err)}`);
+    } finally {
+      setIsPending(false);
     }
   }
 
