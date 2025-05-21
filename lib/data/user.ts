@@ -3,7 +3,13 @@
 import { auth } from "@/auth";
 import { UserTeam } from "./teams";
 import { db } from "@/db";
-import { groupsTable, teamsTable, userTeamsTable } from "@/db/schema";
+import {
+  groupsTable,
+  TeamRole,
+  teamsTable,
+  usersTable,
+  userTeamsTable,
+} from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { GroupWithCredentials } from "./groups";
 import {
@@ -16,6 +22,12 @@ export type Status = {
   status: "failed" | "success";
   message?: string;
   id?: string;
+};
+
+export type FetchTeamMember = {
+  user_id: string;
+  email: string;
+  role: TeamRole;
 };
 
 export type AllUserCredentialData = {
@@ -79,5 +91,33 @@ export async function getAllUserCredentialsData(): Promise<AllUserCredentialData
   } catch (err) {
     console.log(err);
     throw new Error("Failed to fetch User All credentials data");
+  }
+}
+
+export async function getTeamMembers(
+  teamId: string,
+): Promise<FetchTeamMember[]> {
+  try {
+    const session = await auth();
+    if (!session?.user.id) {
+      throw new Error("Login first");
+    }
+    const members = (await db
+      .select({
+        user_id: userTeamsTable.userId,
+        role: userTeamsTable.role,
+        email: usersTable.email,
+      })
+      .from(userTeamsTable)
+      .innerJoin(usersTable, eq(userTeamsTable.userId, usersTable.id))
+      .where(eq(userTeamsTable.teamId, teamId))) as FetchTeamMember[];
+
+    return members.map((member) => ({
+      user_id: member.user_id,
+      role: member.role,
+      email: member.email,
+    }));
+  } catch (err) {
+    throw new Error("Failed to fetch team members");
   }
 }

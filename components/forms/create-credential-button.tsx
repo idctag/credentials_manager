@@ -104,7 +104,7 @@ export default function CreateCredentialButton({
       form.reset();
       setOpen(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error(`Failed to create credential: ${JSON.stringify(err)}`);
     } finally {
       setIsPending(false);

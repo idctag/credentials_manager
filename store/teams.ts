@@ -12,6 +12,8 @@ type TeamActions = {
   setTeams: (teams: UserTeamWithData[] | null) => void;
   addTeam: (team: UserTeamWithData) => void;
   getTeamById: (teamId: string) => UserTeamWithData | undefined;
+  updateTeamStore: (updatedTeam: UserTeamWithData) => void;
+  removeTeam: (teamId: string) => void;
 };
 
 const initialTeamState: TeamState = {
@@ -40,6 +42,34 @@ const useTeamStore = create<TeamState & TeamActions>()(
     getTeamById: (teamId) => {
       return get().data.teams.find((team) => team.id === teamId);
     },
+    updateTeamStore: (updatedTeam) =>
+      set((state) => {
+        const teamIndex = state.data.teams.findIndex(
+          (team) => team.id === updatedTeam.id,
+        );
+        if (teamIndex !== -1) {
+          state.data.teams[teamIndex] = {
+            ...state.data.teams[teamIndex],
+            ...updatedTeam,
+          };
+          if (state.activeTeam && state.activeTeam.id === updatedTeam.id) {
+            state.activeTeam = {
+              ...state.activeTeam,
+              ...updatedTeam,
+            };
+          }
+        }
+      }),
+    removeTeam: (teamId) =>
+      set((state) => {
+        state.data.teams = state.data.teams.filter(
+          (team) => team.id !== teamId,
+        );
+        if (state.activeTeam && state.activeTeam.id === teamId) {
+          state.activeTeam =
+            state.data.teams.length > 0 ? state.data.teams[0] : null;
+        }
+      }),
   })),
 );
 
