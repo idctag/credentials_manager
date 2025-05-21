@@ -48,7 +48,7 @@ export function CreateTeamForm({ closeDialog }: { closeDialog: () => void }) {
       addTeam(newTeam);
       closeDialog();
     } catch (err) {
-      toast.error("Failed to create group");
+      toast.error(`Failed to create group: ${err}`);
     } finally {
       setIsPending(false);
     }

@@ -58,7 +58,7 @@ export default function CreateGroupButton() {
       };
       addGroup(newGroup);
     } catch (err) {
-      toast.error("Failed to create group");
+      toast.error(`Failed to create group: ${err}`);
     } finally {
       setOpen(false);
       setIsPending(false);

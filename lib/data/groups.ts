@@ -6,8 +6,8 @@ import { groupsTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { FetchCredentialType } from "./credentials";
 import { z } from "zod";
-import { CreateGroupSchema } from "@/components/forms/creat-group-button";
 import { Status } from "./user";
+import { CreateGroupSchema } from "@/components/forms/create-group-button";
 
 export type FetchGroup = {
   id: string;
@@ -51,7 +51,7 @@ export async function createGroup(
     }
     return group;
   } catch (err) {
-    throw new Error("Failed to create group");
+    throw new Error(`Failed to create group: ${err}`);
   }
 }
 
@@ -70,6 +70,6 @@ export async function deleteGroup(groupId: string): Promise<Status> {
       message: `Group ${JSON.stringify(name[0].name)} has been deleted successfully`,
     };
   } catch (err) {
-    return { status: "failed", message: `Failed to deleted group` };
+    return { status: "failed", message: `Failed to deleted group ${err}` };
   }
 }

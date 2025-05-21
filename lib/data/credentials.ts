@@ -66,7 +66,7 @@ export async function getGroupCredentials(
     return groupsWithCredentials;
   } catch (err) {
     console.log("Error fetching credentials:", err);
-    throw new Error("Failed to fetch credentials");
+    throw new Error(`Failed to fetch credentials: ${err}`);
   }
 }
 
@@ -127,7 +127,7 @@ export async function getDatabaseCredential(
       return [];
     }
   } catch (err) {
-    throw new Error("Failed to fetch database credentials");
+    throw new Error(`Failed to fetch database credentials: ${err}`);
   }
 }
 
@@ -146,7 +146,7 @@ export async function getServerCredential(
 
     return result;
   } catch (err) {
-    throw new Error("Failed to fetch server credentials");
+    throw new Error(`Failed to fetch server credentials: ${err}`);
   }
 }
 
@@ -175,7 +175,7 @@ export async function getFullCredential(
     };
     return result;
   } catch (err) {
-    throw new Error("Failed to fetch credentials");
+    throw new Error(`Failed to fetch credentials: ${err}`);
   }
 }
 

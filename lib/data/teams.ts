@@ -127,7 +127,7 @@ export async function createTeam(
     };
     return response;
   } catch (err) {
-    throw new Error("Failed to create team");
+    throw new Error(`Failed to create team ${err}`);
   }
 }
 

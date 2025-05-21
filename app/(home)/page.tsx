@@ -2,7 +2,7 @@
 import useTeamStore from "@/store/teams";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/tables/data-table";
-import { groupColumns } from "@/components/tables/groups/colums";
+import { groupColumns } from "@/components/tables/groups/columns";
 import { credentialColumns } from "@/components/tables/credentials/columns";
 import EditTeamButton from "@/components/forms/edit-team";
 

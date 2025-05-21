@@ -299,7 +299,7 @@ export default function EditTeamButton() {
         <DialogContent>
           <DialogTitle>Confirm Team Deletion</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the team "{activeTeam?.name}"? This
+            Are you sure you want to delete the team {activeTeam?.name}? This
             action cannot be undone.
           </DialogDescription>
           <DialogFooter>

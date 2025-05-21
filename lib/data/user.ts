@@ -118,6 +118,6 @@ export async function getTeamMembers(
       email: member.email,
     }));
   } catch (err) {
-    throw new Error("Failed to fetch team members");
+    throw new Error(`Failed to fetch team members: ${err}`);
   }
 }

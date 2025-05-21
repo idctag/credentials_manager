@@ -30,7 +30,7 @@ export default function DynamicBreadCrumb() {
           const displaySegment = segment.replace(/-/g, " ");
           const breadcrumbText = capitilizeFirstLetter(displaySegment);
           return (
-            <React.Fragment>
+            <React.Fragment key={index}>
               <BreadcrumbItem>
                 {isLastSegment ? (
                   <BreadcrumbPage>{breadcrumbText}</BreadcrumbPage>

@@ -7,56 +7,46 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteCredential, FetchCredentialType } from "@/lib/data/credentials";
-import { useCredentialStore } from "@/store";
+import { deleteGroup, GroupWithCredentials } from "@/lib/data/groups";
+import { useGroupStore } from "@/store";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
-// Define the columns with explicit type
-export const credentialColumns: ColumnDef<FetchCredentialType>[] = [
+export const groupColumns: ColumnDef<GroupWithCredentials>[] = [
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "servers",
-    header: "Servers",
-    cell: ({ row }) => {
-      const cred = row.original;
-      return <span>{cred.servers?.length ?? 0}</span>;
-    },
+    accessorKey: "description",
+    header: "Description",
   },
   {
-    accessorKey: "databases",
-    header: "Databases",
+    accessorKey: "credentials",
+    header: "Credentials",
     cell: ({ row }) => {
-      const cred = row.original;
-      return <span>{cred.databases?.length ?? 0}</span>;
+      const group = row.original;
+      return <span>{group.credentials?.length ?? 0}</span>;
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const credential = row.original;
-      return <CredentialActions credential={credential} />;
+      const group = row.original;
+      return <GroupActions group={group} />;
     },
   },
 ];
 
-// Component for actions
-function CredentialActions({
-  credential,
-}: {
-  credential: FetchCredentialType;
-}) {
-  const { removeCredential } = useCredentialStore();
+function GroupActions({ group }: { group: GroupWithCredentials }) {
+  const { removeGroup } = useGroupStore();
 
   const onDelete = async () => {
-    const res = await deleteCredential(credential.id);
+    const res = await deleteGroup(group.id);
     if (res.status === "success") {
       toast.success(res.message);
-      removeCredential(credential.id);
+      removeGroup(group.id);
     } else {
       toast.error(res.message);
     }
