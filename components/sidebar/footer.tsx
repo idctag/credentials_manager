@@ -18,7 +18,8 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 import { signOut, useSession } from "next-auth/react";
-import CreateGroupButton from "./components/creat-group-button";
+import CreateGroupButton from "../forms/create-group-button";
+import CreateCredentialButton from "../forms/create-credential-button";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -30,7 +31,10 @@ export function NavUser() {
   return (
     <SidebarMenu>
       <SidebarGroup>
-        <SidebarGroupContent>
+        <SidebarGroupContent className="space-y-4">
+          <SidebarMenuItem>
+            <CreateCredentialButton />
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <CreateGroupButton />
           </SidebarMenuItem>

@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { createGroup } from "@/lib/data/groups";
-import useTeamStore from "@/store/team-store";
+import { useGroupStore, useTeamStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader, PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
@@ -34,7 +34,7 @@ export default function CreateGroupButton() {
   const { activeTeam } = useTeamStore();
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const { addGroup } = useTeamStore();
+  const { addGroup } = useGroupStore();
   const form = useForm<z.infer<typeof CreateGroupSchema>>({
     resolver: zodResolver(CreateGroupSchema),
     defaultValues: {
@@ -58,7 +58,7 @@ export default function CreateGroupButton() {
       };
       addGroup(newGroup);
     } catch (err) {
-      toast.error("Failed to create group");
+      toast.error(`Failed to create group: ${err}`);
     } finally {
       setOpen(false);
       setIsPending(false);

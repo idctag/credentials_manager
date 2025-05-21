@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../ui/sidebar";
-import useTeamStore from "@/store/team-store";
+import useTeamStore from "@/store/teams";
 import { useState } from "react";
 import {
   Dialog,

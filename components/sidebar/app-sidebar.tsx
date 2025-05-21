@@ -9,7 +9,7 @@ import { NavUser } from "./footer";
 import TeamSwitcher from "./team-switcher";
 import { NavMain } from "./nav-group";
 import { NavCredentials } from "./nav-credentials";
-import useTeamStore from "@/store/team-store";
+import useTeamStore from "@/store/teams";
 import { useEffect } from "react";
 import { getAllUserCredentialsData } from "@/lib/data/user";
 

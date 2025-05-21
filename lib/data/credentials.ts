@@ -7,6 +7,8 @@ import { databaseCredentialTable } from "@/db/schema/database_credentials";
 import { serverCredentialTable } from "@/db/schema/server_credentials";
 import { and, eq, isNull } from "drizzle-orm";
 import { Status } from "./user";
+import { z } from "zod";
+import { CreateCredentialSchema } from "@/components/forms/create-credential-button";
 
 export type FetchCredentialType = {
   id: string;
@@ -64,7 +66,7 @@ export async function getGroupCredentials(
     return groupsWithCredentials;
   } catch (err) {
     console.log("Error fetching credentials:", err);
-    throw new Error("Failed to fetch credentials");
+    throw new Error(`Failed to fetch credentials: ${err}`);
   }
 }
 
@@ -125,7 +127,7 @@ export async function getDatabaseCredential(
       return [];
     }
   } catch (err) {
-    throw new Error("Failed to fetch database credentials");
+    throw new Error(`Failed to fetch database credentials: ${err}`);
   }
 }
 
@@ -144,7 +146,7 @@ export async function getServerCredential(
 
     return result;
   } catch (err) {
-    throw new Error("Failed to fetch server credentials");
+    throw new Error(`Failed to fetch server credentials: ${err}`);
   }
 }
 
@@ -173,7 +175,7 @@ export async function getFullCredential(
     };
     return result;
   } catch (err) {
-    throw new Error("Failed to fetch credentials");
+    throw new Error(`Failed to fetch credentials: ${err}`);
   }
 }
 
@@ -192,6 +194,56 @@ export async function deleteCredential(credentialId: string): Promise<Status> {
     return {
       status: "success",
       message: `credential ${name[0].name} has been deleted`,
+    };
+  } catch (err) {
+    return { status: "failed", message: JSON.stringify(err) };
+  }
+}
+
+export async function createCredential(
+  values: z.infer<typeof CreateCredentialSchema>,
+  teamId: string,
+  groupId?: string,
+): Promise<Status> {
+  try {
+    const session = await auth();
+    if (!session) {
+      throw new Error("Must be logged in");
+    }
+    const { databases, servers, name } = values;
+    const credential = await db
+      .insert(credentialsTable)
+      .values({
+        name: name,
+        group_id: groupId ? groupId : null,
+        team_id: teamId,
+        owner_id: session.user.id,
+      })
+      .returning({ id: credentialsTable.id });
+    if (databases && databases.length > 0) {
+      await Promise.all(
+        databases.map(async (inputs) => {
+          await db.insert(databaseCredentialTable).values({
+            ...inputs,
+            credential_id: credential[0].id,
+          });
+        }),
+      );
+    }
+    if (servers && servers.length > 0) {
+      await Promise.all(
+        servers.map(async (inputs) => {
+          await db.insert(serverCredentialTable).values({
+            ...inputs,
+            credential_id: credential[0].id,
+          });
+        }),
+      );
+    }
+    return {
+      status: "success",
+      message: "Credential created",
+      id: credential[0].id,
     };
   } catch (err) {
     return { status: "failed", message: JSON.stringify(err) };
