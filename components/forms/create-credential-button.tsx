@@ -52,6 +52,7 @@ export default function CreateCredentialButton({
 }) {
   const { activeTeam } = useTeamStore();
   const { addCredential } = useCredentialStore();
+  const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const form = useForm<z.infer<typeof CreateCredentialSchema>>({
     resolver: zodResolver(CreateCredentialSchema),
@@ -97,7 +98,11 @@ export default function CreateCredentialButton({
 
       const storeGroupId = groupId ? groupId : undefined;
       addCredential(cred, storeGroupId);
+      toast.success(
+        `Successfully created credential: ${JSON.stringify(cred.name)}`,
+      );
       form.reset();
+      setOpen(false);
     } catch (err) {
       console.log(err);
       toast.error(`Failed to create credential: ${JSON.stringify(err)}`);
@@ -107,7 +112,7 @@ export default function CreateCredentialButton({
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <SidebarMenuButton>
           <PlusCircleIcon />

@@ -67,25 +67,13 @@ const useCredentialStore = create<CredentialState & CredentialActions>()(
             credential,
           );
         }
-        if (state.activeTeam?.groups) {
-          const activeGroupIndex = state.activeTeam.groups.findIndex(
-            (group) => group.id === groupId,
-          );
 
-          if (!state.activeTeam.groups[activeGroupIndex].credentials) {
-            state.activeTeam.groups[activeGroupIndex].credentials = [];
-          }
-          state.activeTeam.groups[activeGroupIndex].credentials.push(
-            credential,
-          );
-        } else {
-          if (teamIndex >= 0) {
-            state.data.teams[teamIndex].credentials.push(credential);
-          }
+        if (teamIndex >= 0) {
+          state.data.teams[teamIndex].credentials.push(credential);
+        }
 
-          if (state.activeTeam) {
-            state.activeTeam.credentials.push(credential);
-          }
+        if (state.activeTeam) {
+          state.activeTeam.credentials.push(credential);
         }
       });
     },

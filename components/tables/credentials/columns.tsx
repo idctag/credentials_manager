@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { deleteCredential, FetchCredentialType } from "@/lib/data/credentials";
 import { useCredentialStore } from "@/store";
-import useTeamStore from "@/store/teams";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";

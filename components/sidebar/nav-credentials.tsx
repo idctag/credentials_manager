@@ -1,6 +1,6 @@
 "use client";
 
-import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
+import { Folder, MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -20,10 +20,23 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import useTeamStore from "@/store/teams";
+import { useCredentialStore } from "@/store";
+import { deleteCredential } from "@/lib/data/credentials";
+import { toast } from "sonner";
 
 export function NavCredentials() {
   const { isMobile } = useSidebar();
   const { activeTeam } = useTeamStore();
+  const { removeCredential } = useCredentialStore();
+  async function onDelete(id: string) {
+    const res = await deleteCredential(id);
+    if (res.status === "success") {
+      toast.success(res.message);
+      removeCredential(id);
+    } else {
+      toast.error(res.message);
+    }
+  }
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -51,14 +64,13 @@ export function NavCredentials() {
                   >
                     <DropdownMenuItem>
                       <Folder className="text-muted-foreground" />
-                      <span>View Project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Forward className="text-muted-foreground" />
-                      <span>Share Project</span>
+                      <span>View Credential</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-red-500 hover:cursor-pointer"
+                      onClick={() => onDelete(item.id)}
+                    >
                       <Trash2 className="text-muted-foreground" />
                       <span>Delete Credential</span>
                     </DropdownMenuItem>
