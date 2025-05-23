@@ -20,7 +20,7 @@ export const credentialsTable = pgTable("credentials", {
   }),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
-});
+}).enableRLS();
 
 export const credentialsRelations = relations(
   credentialsTable,

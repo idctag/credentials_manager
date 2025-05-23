@@ -14,7 +14,7 @@ export const groupsTable = pgTable("groups", {
   team_id: uuid("team_id")
     .references(() => teamsTable.id)
     .notNull(),
-});
+}).enableRLS();
 
 export const groupsRelations = relations(groupsTable, ({ many, one }) => ({
   owner: one(usersTable, {

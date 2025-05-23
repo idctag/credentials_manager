@@ -17,7 +17,7 @@ export const teamsTable = pgTable("teams", {
   description: text("description"),
   created_at: timestamp("created_at").defaultNow().notNull(),
   owner_id: uuid("owner_id").references(() => usersTable.id),
-});
+}).enableRLS();
 
 export const teamRelations = relations(teamsTable, ({ many, one }) => ({
   owner: one(usersTable, {
@@ -40,4 +40,4 @@ export const userTeamsTable = pgTable(
     role: teamRoleEnum("role").notNull().default("member"),
   },
   (t) => [primaryKey({ columns: [t.userId, t.teamId] })],
-);
+).enableRLS();

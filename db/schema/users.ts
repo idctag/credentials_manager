@@ -10,7 +10,7 @@ export const usersTable = pgTable("users", {
   email: text("email").notNull().unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
-});
+}).enableRLS();
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
   teams: many(teamsTable),

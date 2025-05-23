@@ -14,7 +14,7 @@ export const databaseCredentialTable = pgTable("database_credentials", {
   credential_id: uuid("credential_id")
     .references(() => credentialsTable.id)
     .notNull(),
-});
+}).enableRLS();
 
 export const databaseCredentialRelations = relations(
   databaseCredentialTable,

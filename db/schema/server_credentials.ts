@@ -12,7 +12,7 @@ export const serverCredentialTable = pgTable("server_credentials", {
   server_address: varchar("server_address", { length: 500 }),
   description: text("description"),
   credential_id: uuid("credential_id").references(() => credentialsTable.id),
-});
+}).enableRLS();
 
 export const serverCredentialRelations = relations(
   serverCredentialTable,

@@ -34,7 +34,7 @@ export const accounts = pgTable(
       }),
     },
   ],
-);
+).enableRLS();
 
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
@@ -42,7 +42,7 @@ export const sessions = pgTable("session", {
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
-});
+}).enableRLS();
 
 export const authenticators = pgTable(
   "authenticator",
@@ -65,4 +65,4 @@ export const authenticators = pgTable(
       }),
     },
   ],
-);
+).enableRLS();
