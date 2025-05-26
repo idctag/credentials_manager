@@ -20,7 +20,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 interface GrouptableProps<TData, TValue> {
@@ -34,7 +33,6 @@ export function GroupTable<TData extends GroupWithCredentials, TValue>({
 }: GrouptableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -50,13 +48,6 @@ export function GroupTable<TData extends GroupWithCredentials, TValue>({
       columnFilters,
     },
   });
-
-  const handleRowClick = (group: TData) => {
-    router.push({
-      pathname: "/group/[name]",
-      query: { name: encodeURIComponent(group.name), id: group.id },
-    });
-  };
 
   return (
     <div>
@@ -96,7 +87,6 @@ export function GroupTable<TData extends GroupWithCredentials, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => handleRowClick(row.original)}
                   className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (

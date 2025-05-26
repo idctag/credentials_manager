@@ -5,6 +5,7 @@ import { DataTable } from "@/components/tables/data-table";
 import { groupColumns } from "@/components/tables/groups/columns";
 import { credentialColumns } from "@/components/tables/credentials/columns";
 import EditTeamButton from "@/components/forms/edit-team";
+import { GroupTable } from "@/components/tables/groups/group-table";
 
 export default function Home() {
   const { activeTeam } = useTeamStore();
@@ -19,7 +20,7 @@ export default function Home() {
           <EditTeamButton />
         </div>
         <TabsContent value="groups">
-          <DataTable columns={groupColumns} data={activeTeam?.groups || []} />
+          <GroupTable columns={groupColumns} data={activeTeam?.groups || []} />
         </TabsContent>
         <TabsContent value="credentials">
           <DataTable
